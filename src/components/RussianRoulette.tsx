@@ -18,6 +18,9 @@ export default function RussianRoulette() {
   const [shotsLeft, setShotsLeft] = useState(6);
   const [score, setScore] = useState(0);
   const [rotation, setRotation] = useState(0);
+  const [cheatMode, setCheatMode] = useState(false);
+  const [cheatShotCount, setCheatShotCount] = useState(0);
+  const [shotResults, setShotResults] = useState<boolean[]>([]); // Track actual shot results
 
   const initializeGame = () => {
     const newChambers = createNewGame();
@@ -25,15 +28,15 @@ export default function RussianRoulette() {
     setCurrentChamber(0);
     setShotsLeft(6);
     setGameState('idle');
+    setCheatShotCount(0);
+    setShotResults([]);
   };
 
   const spinCylinder = () => {
     if (gameState !== 'idle' && gameState !== 'safe') return;
     
-    // Reset the gun with new bullet position
     initializeGame();
     
-    // Spin animation
     const newRotation = rotation + 360 + Math.random() * 720;
     setRotation(newRotation);
   };
@@ -41,10 +44,23 @@ export default function RussianRoulette() {
   const pullTrigger = () => {
     if (gameState !== 'idle' && gameState !== 'safe') return;
 
-    // Check current chamber immediately (no delay, no spin)
-    const isBullet = chambers[currentChamber];
+    let isBullet: boolean;
     
-    // Always advance to next chamber to show the color
+    if (cheatMode) {
+      const newCheatCount = cheatShotCount + 1;
+      setCheatShotCount(newCheatCount);
+      
+      if (newCheatCount < 6) {
+        isBullet = false;
+      } else {
+        isBullet = true;
+      }
+    } else {
+      isBullet = chambers[currentChamber];
+    }
+    
+    setShotResults([...shotResults, isBullet]);
+    
     setCurrentChamber(currentChamber + 1);
     
     if (isBullet) {
@@ -68,12 +84,42 @@ export default function RussianRoulette() {
     setScore(0);
   };
 
+  const handleCheatClick = () => {
+    if (!cheatMode) {
+      setCheatMode(true);
+      setCheatShotCount(0);
+    } else {
+      const remainingChambers = shotsLeft;
+      if (remainingChambers > 0) {
+        const newChambers = [...chambers];
+        
+        for (let i = currentChamber; i < 6; i++) {
+          newChambers[i] = false;
+        }
+        
+        const bulletPosition = currentChamber + Math.floor(Math.random() * remainingChambers);
+        newChambers[bulletPosition] = true;
+        
+        setChambers(newChambers);
+      }
+      
+      setCheatMode(false);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-red-950 to-black text-white p-4">
       <div className="max-w-2xl w-full text-center space-y-8">
         {/* Title */}
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4 text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
-          Russian Roulette
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+          Russian R
+          <span 
+            onClick={handleCheatClick}
+            className="cursor-pointer select-none"
+          >
+            o
+          </span>
+          ulette
         </h1>
 
         {/* Revolver */}
@@ -95,7 +141,7 @@ export default function RussianRoulette() {
                     key={index}
                     className={`absolute w-6 h-6 rounded-full border-2 transform -translate-x-1/2 -translate-y-1/2 transition-colors duration-300 ${
                       index < currentChamber 
-                        ? chambers[index]
+                        ? shotResults[index]
                           ? 'bg-red-600 border-red-500 shadow-[0_0_10px_rgba(220,38,38,0.8)]'
                           : 'bg-green-600 border-green-500 shadow-[0_0_10px_rgba(22,163,74,0.8)]'
                         : 'bg-gray-600 border-gray-500'
@@ -197,7 +243,7 @@ export default function RussianRoulette() {
         {/* Warning */}
         <div className="mt-12 p-4 bg-yellow-900/30 border border-yellow-600/50 rounded-lg">
           <p className="text-sm text-yellow-400">
-            ⚠️ This is a game. Never play with real weapons. Stay safe!
+            ⚠️ This is a game. Never play with real weapons. {cheatMode ? 'Please stay safe!' : 'Stay safe!'}
           </p>
         </div>
       </div>
