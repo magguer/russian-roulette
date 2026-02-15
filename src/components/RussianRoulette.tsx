@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 type GameState = 'idle' | 'spinning' | 'safe' | 'dead' | 'won';
 
@@ -20,7 +20,9 @@ export default function RussianRoulette() {
   const [rotation, setRotation] = useState(0);
   const [cheatMode, setCheatMode] = useState(false);
   const [cheatShotCount, setCheatShotCount] = useState(0);
-  const [shotResults, setShotResults] = useState<boolean[]>([]); // Track actual shot results
+  const [shotResults, setShotResults] = useState<boolean[]>([]);
+  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const clickCountRef = useRef(0);
 
   const initializeGame = () => {
     const newChambers = createNewGame();
@@ -85,25 +87,41 @@ export default function RussianRoulette() {
   };
 
   const handleCheatClick = () => {
-    if (!cheatMode) {
-      setCheatMode(true);
-      setCheatShotCount(0);
-    } else {
-      const remainingChambers = shotsLeft;
-      if (remainingChambers > 0) {
-        const newChambers = [...chambers];
-        
-        for (let i = currentChamber; i < 6; i++) {
-          newChambers[i] = false;
+    clickCountRef.current += 1;
+
+    if (clickTimerRef.current) {
+      clearTimeout(clickTimerRef.current);
+    }
+
+    if (clickCountRef.current === 2) {
+      // Double tap detected
+      clickCountRef.current = 0;
+      
+      if (!cheatMode) {
+        setCheatMode(true);
+        setCheatShotCount(0);
+      } else {
+        const remainingChambers = shotsLeft;
+        if (remainingChambers > 0) {
+          const newChambers = [...chambers];
+          
+          for (let i = currentChamber; i < 6; i++) {
+            newChambers[i] = false;
+          }
+          
+          const bulletPosition = currentChamber + Math.floor(Math.random() * remainingChambers);
+          newChambers[bulletPosition] = true;
+          
+          setChambers(newChambers);
         }
         
-        const bulletPosition = currentChamber + Math.floor(Math.random() * remainingChambers);
-        newChambers[bulletPosition] = true;
-        
-        setChambers(newChambers);
+        setCheatMode(false);
       }
-      
-      setCheatMode(false);
+    } else {
+      // Wait for potential second tap
+      clickTimerRef.current = setTimeout(() => {
+        clickCountRef.current = 0;
+      }, 300);
     }
   };
 
@@ -112,14 +130,7 @@ export default function RussianRoulette() {
       <div className="max-w-2xl w-full text-center space-y-8">
         {/* Title */}
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
-          Russian R
-          <span 
-            onClick={handleCheatClick}
-            className="cursor-pointer select-none"
-          >
-            o
-          </span>
-          ulette
+          Russian Roulette
         </h1>
 
         {/* Revolver */}
@@ -162,14 +173,14 @@ export default function RussianRoulette() {
 
         {/* Probability */}
         <div className="text-xl text-gray-400">
-          Probability of Death: <span className="text-red-400 font-bold">{((1 / shotsLeft) * 100).toFixed(1)}%</span>
+          Probability of Death: <span className="text-red-400 font-bold">{((1 / shotsLeft) * 100).toFixed(1)}<span onClick={handleCheatClick} className="cursor-default select-none">%</span></span>
         </div>
 
         {/* Game Over Messages */}
         {gameState === 'dead' && (
           <div className="space-y-4">
             <p className="text-4xl font-bold text-red-600 animate-pulse">
-              💀 BANG! Game Over!
+              💀 BANG!<br />Game Over!
             </p>
             <p className="text-xl text-gray-300">
               You survived {score} shot{score !== 1 ? 's' : ''}
@@ -200,7 +211,7 @@ export default function RussianRoulette() {
               </button>
               
               {gameState === 'safe' && (
-                <p className="text-2xl font-bold text-green-400 animate-bounce py-6">
+                <p className="text-2xl font-bold text-green-400 animate-pulse py-6">
                   ✓ Click! You&apos;re safe... for now.
                 </p>
               )}
