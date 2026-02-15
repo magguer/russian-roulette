@@ -1,8 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎲 Russian Roulette Game
 
-## Getting Started
+A thrilling Russian Roulette game built with Next.js 16, TypeScript, and Tailwind CSS. Test your luck and see how many shots you can survive!
 
-First, run the development server:
+## 🎮 Features
+
+- **Interactive Gameplay**: Click to pull the trigger and test your luck
+- **Visual Cylinder Animation**: Watch the cylinder spin with each shot
+- **Score Tracking**: See how many shots you survive
+- **Responsive Design**: Play on desktop, tablet, or mobile
+- **Dark Theme**: Immersive gaming experience with a dark, dramatic interface
+- **Modern Stack**: Built with Next.js 16, React, TypeScript, and Tailwind CSS
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ installed on your machine
+- npm, yarn, pnpm, or bun package manager
+
+### Installation
+
+1. Clone the repository or download the project
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Development
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -10,27 +42,52 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to start playing!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The page auto-updates as you edit files.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Build for Production
 
-## Learn More
+```bash
+npm run build
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 How to Play
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Click **"Pull Trigger"** to take a shot
+2. The cylinder spins and determines your fate
+3. If you're safe, you can continue playing
+4. Survive all 6 chambers to win!
+5. If you hit the bullet... game over!
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Tech Stack
 
-## Deploy on Vercel
+- **Framework**: [Next.js 16](https://nextjs.org) with App Router
+- **Language**: [TypeScript](https://www.typescriptlang.org)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com)
+- **Font**: [Geist](https://vercel.com/font) by Vercel
+- **Deployment**: Optimized for [Vercel](https://vercel.com)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🌐 Deploy on Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The easiest way to deploy this app is using the [Vercel Platform](https://vercel.com/new):
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/russian-roulette)
+
+1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+2. Import your repository to Vercel
+3. Vercel will automatically detect Next.js and deploy your app
+4. Your app will be live with a production URL!
+
+For more details, check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
+
+## ⚠️ Disclaimer
+
+This is a game for entertainment purposes only. Never play with real weapons. Stay safe!
+
+## 📝 License
+
+This project is open source and available for educational purposes.
